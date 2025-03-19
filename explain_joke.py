@@ -12,35 +12,33 @@ client = OpenAI(
     api_key=token,
 )
 
-# Streamlit app
-def main():
-    st.title("Joke Explainer")
 
-    # Text input box for the joke
-    joke = st.text_area("Enter your joke here:")
+# Streamlit app title
+st.title("Joke Explainer")
 
-    # Submit button
-    if st.button("Submit"):
-        if joke:
-            # Call OpenAI GPT-4 model for explanation
-            response = get_explanation(joke)
-            st.subheader("Explanation")
-            st.write(response)
-        else:
-            st.warning("Please enter a joke.")
+# Text box for user to input a joke
+joke_input = st.text_area("Enter your joke here:")
 
-def get_explanation(joke):
-    # Call the OpenAI API
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-4o-mini",
+# Submit button
+if st.button("Submit"):
+    if joke_input:
+        # Call the OpenAI API to get the explanation
+        try:
+            response = client.chat.completions.create(
             messages=[
-                {"role": "user", "content": f"Explain the joke: {joke}"}
-            ]
-        )
-        return completion.choices[0].message['content'].strip()
-    except Exception as e:
-        return f"An error occurred: {e}"
+                {
+                    "role": "user",
+                    "content": f"Explain this joke: {joke_input}",
+                }
+            ],
+            model="gpt-4o-mini",
+            )
 
-if __name__ == "__main__":
-    main()
+            explanation = response.choices[0].message.content
+            # Display the explanation
+            st.subheader("Explanation")
+            st.write(explanation)
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+    else:
+        st.warning("Please enter a joke before submitting.")
