@@ -3,7 +3,7 @@ import openai
 import os
 from openai import OpenAI
 
-token = os.environ["TOKEN"]
+token = os.environ["GITHUB_TOKEN"]
 endpoint = "https://models.inference.ai.azure.com"
 model_name = "gpt-4o-mini"
 
